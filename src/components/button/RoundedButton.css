@@ -1,0 +1,9 @@
+.default-text-style {
+    font-family: Roboto, sans-serif;
+    font-size: 18px;
+    color: var(--button-text-primary);
+}
+.default-button-style {
+    border-radius: 10px;
+    background-color: var(--button-primary);
+}

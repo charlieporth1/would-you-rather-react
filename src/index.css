@@ -1,3 +1,6 @@
+@import './static/styles/defaults.css';
+@import './static/styles/default-font.css';
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

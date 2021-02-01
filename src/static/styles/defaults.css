@@ -1,0 +1,12 @@
+:root {
+    --element-background-light: #f0f0f0;
+    --background-light: rgba(187, 194, 202, 0.72);
+    --primary: #5671ff;
+    --primary-dark: #3f4fb9;
+    --primary-light: #516af1;
+    --text-primary: #000;
+    --button-primary: var(--primary-dark);
+    --button-text-primary: #fff;
+    --default-border-radius: 5px;
+    --default-shadow: 2px 2px 2px #888888;
+}
