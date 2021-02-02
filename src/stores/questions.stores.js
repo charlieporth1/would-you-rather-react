@@ -15,17 +15,26 @@ function userQuestionReducer(state = {user: new User(), value: 0}, action) {
 
     switch (action.type) {
         case 'counter/incremented':
-            return {user: currentUser, value: state.value + 1};
+            return {user: {...currentUser}, value: state.value + 1};
         case 'counter/decremented':
-            return {user: currentUser, value: state.value - 1};
+            return {user: {...currentUser}, value: state.value - 1};
+        case 'user/addQuestion':
+            return {user: {...currentUser}, value: state.value - 1};
         default:
             return state
     }
 }
+const updateUser = (oldUser:User, newUser:User):User => {
+    const newUserList:User[] = users.filter(users !== oldUser);
+    newUser = Object.assign(oldUser, newUser);
+    newUserList.push(newUser);
+    users = newUserList;
+    return newUser;
+};
 
-let store = createStore(userQuestionReducer);
+let QuestionStore = createStore(userQuestionReducer);
 
-store.subscribe(() => console.log(store.getState()));
+QuestionStore.subscribe(() => console.log(QuestionStore.getState()));
 
 // The only way to mutate the internal state is to dispatch an action.
 // The actions can be serialized, logged or stored and later replayed.
@@ -33,4 +42,7 @@ store.subscribe(() => console.log(store.getState()));
 // {value: 1}
 // store.dispatch({ type: 'counter/incremented' });
 // {value: 2}
-store.dispatch({type: 'counter/decremented'});
+QuestionStore.dispatch({type: 'counter/decremented'});
+
+
+export default QuestionStore;

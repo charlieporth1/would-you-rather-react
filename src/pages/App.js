@@ -3,12 +3,16 @@ import './App.css';
 import * as questionData from '../_DATA';
 
 import * as React from "react";
+import DefaultInput from "../components/inputs/DefaultInput";
+import User from "../models/users.model";
+import QuestionStore from "../stores/questions.stores";
 
 export default class App extends React.Component<> {
-
+    questionStore = QuestionStore;
     state = {
         users: [],
         questions: [],
+        newUserName: '',
     };
 
     componentWillMount(): void {
@@ -16,16 +20,20 @@ export default class App extends React.Component<> {
         const questions = questionData._getQuestions();
         this.setState({users, questions})
     }
+    createNewUser(name: string) {
+        const newUser = new User({name})
 
+    }
     render() {
-
+        const {newUserName, users, questions } = this.state;
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
                 </header>
                 <body>
-
+                    <DefaultInput value={newUserName} title={"Your name"} autocomplete="name"
+                    onChange={(event)=> this.createNewUser(event.target.value)}/>
                 </body>
             </div>
         );
