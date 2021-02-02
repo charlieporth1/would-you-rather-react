@@ -3,8 +3,8 @@ import User from "../models/users.model";
 
 let users: User[] = [];
 
-function userQuestionReducer(state = {user: new User(), value: 0}, action) {
-    const currentUsers:User[] = users.filter(users === state.user);
+function userQuestionReducer(state = {user: new User({}), value: 0}, action) {
+    const currentUsers:User[] | null = users.filter(users === state.user) || null;
     let currentUser:User;
     if (currentUsers.length <= 0) {
         users.push(state.user);
@@ -15,11 +15,11 @@ function userQuestionReducer(state = {user: new User(), value: 0}, action) {
 
     switch (action.type) {
         case 'counter/incremented':
-            return {user: {...currentUser}, value: state.value + 1};
+            return {user: new User({...currentUser}), value: state.value + 1};
         case 'counter/decremented':
-            return {user: {...currentUser}, value: state.value - 1};
+            return {user: new User({...currentUser}), value: state.value - 1};
         case 'user/addQuestion':
-            return {user: {...currentUser}, value: state.value - 1};
+            return {user: new User({...currentUser}), value: state.value - 1};
         default:
             return state
     }

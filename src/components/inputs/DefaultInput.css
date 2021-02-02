@@ -1,5 +1,24 @@
 .default-placeholder-text-default-input {
     font-size: 18px;
-    font-family: Roboto, sans-serif;
+    font-family: var(--default-font);
+    color: slategray;
+    margin-top: 45px;
+    text-align: left;
+}
+input[text] {
+    font-size: 18px;
+    font-family: var(--default-font);
+    color: slategray;
+}
+.default-input-input {
+    font-size: 18px;
+    border-radius: 5px;
+    border-color: slategray;
+    border-width: 3px;
+    margin-top: 10px;
+}
 
+.default-input-div {
+    wrap-option: warp;
+    display: inline-block;
 }
