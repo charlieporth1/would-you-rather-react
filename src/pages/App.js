@@ -4,38 +4,63 @@ import * as questionData from '../_DATA';
 
 import * as React from "react";
 import DefaultInput from "../components/inputs/DefaultInput";
-import User from "../models/users.model";
 import QuestionBlock from "../components/questionBlock/QuestionBlock";
-import {addUser} from "../stores/user.store";
+import UserStore, {addUser} from "../stores/user.store";
+import UserSelector from "../components/userSelector/UserSelector";
+import {objectToArray, randomNumber} from "../utils/utils";
+import QuestionStore from "../stores/question.store";
 
 class App extends React.Component<> {
     state = {
-        users:null,
+        users: null,
         questions: null,
         newUserName: '',
+        currentUser:null,
+        currentQuestion:null,
     };
 
-    async componentWillMount(): void {
-        const users =  await questionData._getUsers();
+    async componentDidMount(): void {
+        const users = await questionData._getUsers();
         const questions = await questionData._getQuestions();
-        console.log(questions, users);
-        this.setState({users, questions})
+        this.setState({users, questions});
     }
+
+    LoginBlock() {
+        const {newUserName, users} = this.state;
+        return (<div>
+                <UserSelector users={users}/>
+                <DefaultInput value={newUserName} placeholder={"Your name"} autocomplete="name"
+                              onChange={(event) => addUser(event.target.value)}/>
+            </div>
+        );
+    }
+
     render() {
-        const {newUserName, users, questions } = this.state;
-        console.log(questions, users);
+        const {questions, users, currentUser, currentQuestion} = this.state;
+        UserStore.subscribe(()=> UserStore.getState().then(data=> {
+            this.setState({currentUser: data.user})
+        }));
+
+
         if (!questions && !users) {
             return <div/>
         }
+        const questionsArray = objectToArray(questions);
+        const question = questionsArray[randomNumber(0, questionsArray.length - 1)];
+        QuestionStore.subscribe(()=> {
+            if (question !== currentQuestion) {
+                this.setState({currentQuestion: question})
+            }
+        });
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
                 </header>
                 <body>
-                    <DefaultInput value={newUserName} placeholder={"Your name"} autocomplete="name"
-                    onChange={(event)=> addUser(event.target.value)}/>
-                    <QuestionBlock title={"Would you rather..."} question={questions['8xf0y6ziyjabvozdd253nd']}/>
+                {!currentUser ? this.LoginBlock() :
+                    <QuestionBlock title={`${currentUser.name} would you rather...`} question={currentQuestion || question}/>
+                }
                 </body>
             </div>
         );

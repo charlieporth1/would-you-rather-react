@@ -6,8 +6,8 @@ export default class RoundedButton extends React.Component<> {
     render() {
         const {styleButton, onClick, title, titleStyle, classNames = []} = this.props;
         return (
-            <button className={makeCleanClassName([...classNames, "default-button-style"])} style={{...styleButton}} onClick={onClick}>
-                <div  className={makeCleanClassName(["default-text-style"])} style={{...titleStyle}}>{title}</div>
+            <button className={makeCleanClassName([...classNames, "default-button-style"])} style={styleButton} onClick={onClick}>
+                <div  className={makeCleanClassName(["default-text-style"])} style={titleStyle}>{title}</div>
             </button>
 
         );
