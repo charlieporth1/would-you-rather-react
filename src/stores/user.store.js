@@ -1,15 +1,12 @@
-import {createStore} from 'redux'
+import { createStore} from 'redux'
 import User from "../models/users.model";
 import * as questionData from "../_DATA";
-
-let currentUser;
-let name = '';
 
 async function getUsers() {
     return await questionData._getUsers();
 }
 
-function userReducer(state = {user: null}, action) {
+export function userReducer(state = {user: null}, action) {
     return getUsers().then(users => {
         console.log(action);
         switch (action.type) {
@@ -25,9 +22,12 @@ function userReducer(state = {user: null}, action) {
 
 }
 
-let UserStore = createStore(userReducer);
-UserStore.subscribe(async () => console.log(await UserStore.getState()));
-export default UserStore;
+// let UserStore = createStore();
+// UserStore.subscribe(async () => console.log(await UserStore.getState()));
+//
 export const addUser = (name = 'Charlie Porth') => {
-    UserStore.dispatch({type: 'addUser/name', state: {name}});
+    userReducer().dispatch({type: 'addUser/name', state: {name}});
 };
+//
+//
+// export default UserStore;

@@ -3,7 +3,7 @@ import * as questionData from '../_DATA';
 
 
 
-function questionReducer(state = {questions: questionData._getQuestions()}, action) {
+export function questionReducer(state = {questions: questionData._getQuestions()}, action) {
     switch (action.type) {
         case 'counter/incremented':
             return {questions:{}};
@@ -20,7 +20,7 @@ function questionReducer(state = {questions: questionData._getQuestions()}, acti
 
 let QuestionStore = createStore(questionReducer);
 
-QuestionStore.subscribe(() => console.log(QuestionStore.getState()));
+QuestionStore.subscribe(async () => console.log(await QuestionStore.getState()));
 
 // The only way to mutate the internal state is to dispatch an action.
 // The actions can be serialized, logged or stored and later replayed.
@@ -30,5 +30,3 @@ QuestionStore.subscribe(() => console.log(QuestionStore.getState()));
 // {value: 2}
 QuestionStore.dispatch({type: 'counter/decremented'});
 
-
-export default QuestionStore;

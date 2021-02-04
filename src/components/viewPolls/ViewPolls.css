@@ -1,0 +1,11 @@
+.view-polls-div-results {
+    display: grid;
+    grid-template-rows: repeat(3, 75px);
+    grid-template-columns: repeat(2, 275px);
+    text-align: left;
+
+}
+.view-polls-container-div {
+    display: inline-block;
+    justify-self: center !important;
+}
