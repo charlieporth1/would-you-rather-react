@@ -1,7 +1,16 @@
-.button-blocks-question-block {
-
+.container-question-block {
+    align-self: center;
+    justify-content: center;
+    display: inline-block;
 }
-.button-blocks-question-block button {
+.container-question-block button {
     justify-content: space-between;
     margin: 10px;
+}
+.question-block-btn-row {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    row-gap: 10px;
+    justify-self: center;
 }

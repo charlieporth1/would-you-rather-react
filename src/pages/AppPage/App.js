@@ -3,7 +3,7 @@ import './App.css';
 import * as questionData from '../../_DATA';
 import * as React from "react";
 import QuestionBlock from "../../components/questionBlock/QuestionBlock";
-import {objectToArray, randomNumber} from "../../utils/utils";
+import {makeCleanClassName, objectToArray, randomNumber} from "../../utils/utils";
 import RoundedButton from "../../components/button/RoundedButton";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
@@ -15,6 +15,7 @@ class App extends React.Component<App.propTypes> {
         currentUser: null,
         currentQuestion: null,
         showPolls: false,
+        showCreateQuestion: false,
     };
 
     async componentDidMount(): void {
@@ -25,17 +26,29 @@ class App extends React.Component<App.propTypes> {
         this.setState({questions, currentUser: user});
     }
 
+    async user() {
+        const {store, history} = this.props;
+        const {userStore} = store.getState();
+        const {user} = (await userStore);
+        if (user) {
+            return user;
+        } else {
+            console.warn("No User logged in. Logging out");
+            history.push('/login');
+        }
+    }
+
     render() {
         const {store, history} = this.props;
-        const {userStore, questionStore} = store.getState();
-        const {questions, currentUser, currentQuestion, showPolls} = this.state;
+
+        const {questions, currentUser, currentQuestion, showPolls, showCreateQuestion} = this.state;
+        this.user().then();
 
         store.subscribe(async () => {
-            const {user} = (await userStore);
-            if (user) {
-                console.warn("User refreshed");
-                this.setState({currentUser: user});
-            }
+            await this.user().then((user) => {
+                console.debug("User refreshed");
+                this.setState({currentUser: user})
+            })
         });
         if (!questions || !currentUser) {
             return <div/>
@@ -46,7 +59,6 @@ class App extends React.Component<App.propTypes> {
 
         store.subscribe(() => {
             if (question !== currentQuestion && showPolls) {
-                console.log(currentUser);
                 this.setState({currentQuestion: question, showPolls: false})
             }
         });
@@ -59,9 +71,14 @@ class App extends React.Component<App.propTypes> {
                 <div>
                     <QuestionBlock title={`${currentUser.name} would you rather...`}
                                    question={cqq} store={store}/>
-                    <RoundedButton title="Show Results"
-                                   onClick={() => this.setState({showPolls: !showPolls})}/>
-                    {showPolls && history.push(`/questions/${cqq.id}`) }
+                    <div className={makeCleanClassName(['button-grid-app-div'])}>
+                        <RoundedButton styleButton={{marginRight: 30}} title="Show Results"
+                                       onClick={() => this.setState({showPolls: !showPolls})}/>
+                        <RoundedButton styleButton={{marginLeft: 30}} title="Create Question"
+                                       onClick={() => this.setState({showCreateQuestion: !showCreateQuestion})}/>
+                    </div>
+                    {showPolls && history.push(`/questions/${cqq.id}`)}
+                    {showCreateQuestion && history.push(`/questions/create`)}
                 </div>
             </div>
         );

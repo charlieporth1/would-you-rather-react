@@ -11,10 +11,12 @@ export default class QuestionBlock extends React.Component<QuestionBlock.propTyp
         const {question, title} = this.props;
         const questionOne = uppercaseFirstLetter(question.optionOne.text) + "?";
         const questionTwo = uppercaseFirstLetter(question.optionTwo.text) + "?";
-        return (<div className={makeCleanClassName(["button-blocks-question-block"])}>
+        return (<div className={makeCleanClassName(["container-question-block"])}>
             <h1>{title}</h1>
-            <RoundedButton title={questionOne} onClick={() => this.optionClick("optionOne")}/>
-            <RoundedButton title={questionTwo} onClick={() => this.optionClick("optionTwo")}/>
+            <div className={makeCleanClassName(['question-block-btn-row'])}>
+                <RoundedButton title={questionOne} onClick={() => this.optionClick("optionOne")}/>
+                <RoundedButton title={questionTwo} onClick={() => this.optionClick("optionTwo")}/>
+            </div>
         </div>);
     }
 

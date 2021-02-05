@@ -3,7 +3,7 @@ export const makeCleanClassName = (classNames: string[]): string => {
     // Filter with "Boolean" deleting empty values
     return classNames.filter(Boolean).join(CLASSES_SEPARATOR);
 };
-export const uppercaseFirstLetter = (str: string) => {
+export const uppercaseFirstLetter = (str: string = 'charles') => {
     return str.charAt(0).toUpperCase() + str.slice(1, str.length);
 };
 export const objectToArray = (obj: Object) => {

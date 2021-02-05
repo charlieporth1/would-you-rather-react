@@ -196,5 +196,3 @@ export function _saveQuestionAnswer({authedUser, qid, answer}) {
         }, 500)
     })
 }
-
-// export {_saveQuestionAnswer, _saveQuestion, formatQuestion, questions, users, generateUID, _getQuestions, _getUsers}

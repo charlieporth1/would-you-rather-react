@@ -9,9 +9,9 @@ import PollDetails from "./pages/PollPage/PollDetails";
 import {Provider} from 'react-redux'
 import configureStore, {history} from './stores/configure.store'
 import {ConnectedRouter} from 'connected-react-router'
+import CreateQuestionPage from "./pages/CreateQuestionPage/CreateQuestionPage";
 
 const store = configureStore();
-// const {userStore, questionStore} = store.getState();
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
@@ -20,7 +20,12 @@ ReactDOM.render(
                     <Switch>
                         <Route exact path='/login' render={(props) => <LoginPage {...props} store={store}/>}/>
                         <Route exact path='/home' render={(props) => <App {...props} store={store}/>}/>
-                        <Route path="/questions/:question_id" render={(props) => <PollDetails {...props} questionId={props.match.params.question_id}/>}/>
+                        <Route path="/questions/create"
+                               render={(props) => <CreateQuestionPage {...props} store={store}/>}/> {/* This needs to come first because react doesn't know if create is an id or not*/}
+                        <Route path="/questions/:question_id" render={(props) => <PollDetails {...props}
+                                                                                              questionId={props.match.params.question_id}/>}/>
+
+
                         <Redirect to={'/login'}/>
                     </Switch>
                 </Router>

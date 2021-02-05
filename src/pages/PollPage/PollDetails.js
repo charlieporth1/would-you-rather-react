@@ -16,10 +16,22 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
         const questions = await questionData._getQuestions();
         this.setState({questions});
     }
+    async user() {
+        const {store, history} = this.props;
+        const {userStore} = store.getState();
+        const {user} = (await userStore);
+        if (user) {
+            return user;
+        } else {
+            console.warn("No User logged in. Logging out");
+            history.push('/login');
+        }
+    }
 
     render() {
         const {questionId} = this.props;
         const {questions} = this.state;
+        this.user().then();
         if (!questions) {
             return <div/>
         }
