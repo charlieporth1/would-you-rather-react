@@ -1,0 +1,7 @@
+.button-blocks-question-block {
+
+}
+.button-blocks-question-block button {
+    justify-content: space-between;
+    margin: 10px;
+}
