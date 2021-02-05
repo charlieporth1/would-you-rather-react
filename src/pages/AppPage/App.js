@@ -1,14 +1,12 @@
-import logo from './logo.svg';
+import logo from '../../static/assets/logo.svg';
 import './App.css';
-import * as questionData from '../_DATA';
+import * as questionData from '../../_DATA';
 import * as React from "react";
-import QuestionBlock from "../components/questionBlock/QuestionBlock";
-import {objectToArray, randomNumber} from "../utils/utils";
-import RoundedButton from "../components/button/RoundedButton";
-import ViewPolls from "../components/viewPolls/ViewPolls";
+import QuestionBlock from "../../components/questionBlock/QuestionBlock";
+import {objectToArray, randomNumber} from "../../utils/utils";
+import RoundedButton from "../../components/button/RoundedButton";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
-import configureStore from "../stores/configure.store";
 
 class App extends React.Component<App.propTypes> {
     state = {

@@ -4,7 +4,6 @@ import {makeCleanClassName, reduceArrayToPercent, uppercaseFirstLetter} from "..
 import './ViewPolls.css';
 
 export default class ViewPolls extends React.Component<ViewPolls.propTypes> {
-
     render() {
         const {question, title} = this.props;
         const questionOne = uppercaseFirstLetter(question.optionOne.text) + "?";

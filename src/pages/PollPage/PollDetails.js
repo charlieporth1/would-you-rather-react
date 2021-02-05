@@ -1,7 +1,7 @@
-import ViewPolls from "../components/viewPolls/ViewPolls";
+import ViewPolls from "../../components/viewPolls/ViewPolls";
 import PropTypes from "prop-types";
 import React from "react";
-import * as questionData from "../_DATA";
+import * as questionData from "../../_DATA";
 import {withRouter} from "react-router-dom";
 
 class PollDetails extends React.Component<PollDetails.propTypes> {
@@ -20,8 +20,15 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
     render() {
         const {questionId} = this.props;
         const {questions} = this.state;
+        if (!questions) {
+            return <div/>
+        }
         const question = questions[questionId];
-        return (<ViewPolls question={question} title="Would you rather..."/>)
+        return (
+            <div>
+                <ViewPolls question={question} title="Would you rather..."/>
+            </div>
+        )
     }
 }
 

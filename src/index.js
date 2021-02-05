@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import {BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
-import reportWebVitals from './pages/reportWebVitals';
-import LoginPage from "./pages/Login";
-import App from "./pages/App";
-import PollDetails from "./pages/PollDetails";
+import reportWebVitals from './utils/reportWebVitals';
+import LoginPage from "./pages/LoginPage/Login";
+import App from "./pages/AppPage/App";
+import PollDetails from "./pages/PollPage/PollDetails";
 import {Provider} from 'react-redux'
 import configureStore, {history} from './stores/configure.store'
 import {ConnectedRouter} from 'connected-react-router'

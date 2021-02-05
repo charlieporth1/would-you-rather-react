@@ -1,11 +1,10 @@
-import UserSelector from "../components/userSelector/UserSelector";
-import DefaultInput from "../components/inputs/DefaultInput";
-import {addUser} from "../stores/user.store";
-import * as questionData from "../_DATA";
+import UserSelector from "../../components/userSelector/UserSelector";
+import DefaultInput from "../../components/inputs/DefaultInput";
+import {addUser} from "../../stores/user.store";
+import * as questionData from "../../_DATA";
 import * as React from "react";
 import PropTypes from "prop-types";
-import {BrowserRouter, Redirect, withRouter} from "react-router-dom";
-import {runOnce} from "../utils/utils";
+import {withRouter} from "react-router-dom";
 
 
 class LoginPage extends React.Component<> {
