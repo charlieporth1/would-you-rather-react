@@ -1,10 +1,10 @@
 import UserSelector from "../../components/userSelector/UserSelector";
 import DefaultInput from "../../components/inputs/DefaultInput";
-import {addUser} from "../../stores/user.store";
 import * as questionData from "../../_DATA";
 import * as React from "react";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
+import {history} from "../../stores/configure.store";
 
 
 class LoginPage extends React.Component<> {
@@ -17,29 +17,26 @@ class LoginPage extends React.Component<> {
 
     async componentDidMount(): void {
         const users = await questionData._getUsers();
+        const {authStore, history} = this.props;
+        authStore(history);
         this.setState({users});
 
     }
 
     render() {
         const {newUserName, users} = this.state;
-        const {history, store} = this.props;
+        const {store, authStore, history} = this.props;
 
-        store.subscribe(async () => {
-            const {userStore} = store.getState();
-            const {user} = (await userStore);
-            if (user) {
-                history.push('/home');
-            }
-        });
         if (!users) {
             return <div/>;
         }
-
         return (<div>
+                <h2>Login</h2>
+                <div>Select User</div>
                 <UserSelector users={users} store={store}/>
-                <DefaultInput value={newUserName} placeholder="Your name" autocomplete="name"
-                              onChange={(event) => addUser(event.target.value)}/>
+                {/*<div>Or</div>*/}
+                {/*<DefaultInput value={newUserName} placeholder="Your name" autocomplete="name"*/}
+                {/*              onChange={(event) => console.log(event.target.value)}/>*/}
             </div>
         );
     }
@@ -47,6 +44,6 @@ class LoginPage extends React.Component<> {
 
 LoginPage.propTypes = {
     store: PropTypes.object,
-    userStore: PropTypes.object,
+    authStore: PropTypes.func,
 };
 export default withRouter(LoginPage);

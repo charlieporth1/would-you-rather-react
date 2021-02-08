@@ -1,81 +1,62 @@
 import * as React from "react";
 import PropTypes from 'prop-types';
-import * as questionData from '../../_DATA';
 import DefaultInput from "../../components/inputs/DefaultInput";
 import RoundedButton from "../../components/button/RoundedButton";
+import {withRouter} from "react-router-dom";
+import {makeCleanClassName} from "../../utils/utils";
+import './CreateQuestionPage.css';
 
-export default class CreateQuestionPage extends React.Component<CreateQuestionPage.propTypes> {
+class CreateQuestionPage extends React.Component<CreateQuestionPage.propTypes> {
     constructor(props) {
         super(props);
         this.state = {
-            optionOne: null,
-            optionTwo: null,
+            optionOneText: null,
+            optionTwoText: null,
         }
     }
 
-    saveNewQuestion = ({optionOneText, optionTwoText, author}) => {
-        questionData._saveQuestion({optionOneText, optionTwoText, author});
-        alert("Question Saved");
-        this.props.history.push('/home');
-    };
-
-    onInputChange(event, inputName: string) {
-        const value: string = event.target.value.toString() || '';
-        switch (inputName.toLowerCase().trim()) {
-            case "optionone":
-                if (value !== '') {
-                    this.setState({optionOne: value});
-                }
-                break;
-            case "optiontwo":
-                if (value !== '') {
-                    this.setState({optionTwo: value});
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    async user() {
+    saveNewQuestion = async ({optionOneText, optionTwoText, author}) => {
         const {store, history} = this.props;
-        const {userStore} = store.getState();
-        const {user} = (await userStore);
-
-        if (user) {
-            return user;
-        } else {
-            console.warn("No User logged in. Logging out");
-            history.push('/login');
-        }
-    }
+        store.dispatch({type: 'question/addQuestion', payload: {optionOneText, optionTwoText, author}});
+        alert("Question Saved");
+        history.push('/home');
+    };
 
 
     async onSave() {
-        const {optionOne, optionTwo} = this.state;
+        const {optionOneText, optionTwoText} = this.state;
         const {store} = this.props;
-        this.user().then();
-        console.log(store);
         const {userStore} = store.getState();
-        console.log(userStore);
         const {user} = await userStore;
-        console.log(user);
         const author = user.id;
-        this.saveNewQuestion({optionOne, optionTwo, author});
+        await this.saveNewQuestion({optionOneText, optionTwoText, author})
     }
 
     render() {
+        const {authStore, history} = this.props;
+        // authStore(history);
+        return (<div className={makeCleanClassName(['create-question-page-container'])}>
+            <h1 className={makeCleanClassName(['title-create-question'])}>Create a question</h1>
 
-        return (<div>
-            <h2>Would you rather...</h2>
-            <DefaultInput placeholder={"Option one"} autocomplete={false}
-                          onChange={(event) => this.onInputChange(event, "optionOne")}/>
-            <DefaultInput placeholder={"Option two"} autocomplete={false}
-                          onChange={(event) => this.onInputChange(event, "optionTwo")}/>
-            <RoundedButton title={"Save"} onClick={async () => await this.onSave()}/>
+            <h2 className={makeCleanClassName(['default-question-h2-create-question'])}>Would you rather...</h2>
+            <div className={makeCleanClassName(['root-container-create-question'])}>
+                <DefaultInput placeholder={"Option one"}
+                              onChange={(event) => this.setState({optionOneText: event.target.value})}
+                              classNames={makeCleanClassName(['create-question-page-input'])}/>
+                <DefaultInput placeholder={"Option two"}
+                              onChange={(event) => this.setState({optionTwoText: event.target.value})}
+                              classNames={makeCleanClassName(['create-question-page-input'])}/>
+
+                <RoundedButton classNames={makeCleanClassName(['create-question-page-save-btn'])}
+                               title="Save"
+                               onClick={async () => await this.onSave()}/>
+            </div>
         </div>);
     }
 }
+
 CreateQuestionPage.propTypes = {
     store: PropTypes.object.isRequired,
+    authStore: PropTypes.func,
 };
+export default withRouter(CreateQuestionPage);

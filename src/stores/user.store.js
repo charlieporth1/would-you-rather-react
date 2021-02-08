@@ -20,6 +20,3 @@ export function userReducer(state = {user: null}, action) {
 
 }
 
-export const addUser = (name = 'Charlie Porth') => {
-    userReducer().dispatch({type: 'addUser/name', state: {name}});
-};

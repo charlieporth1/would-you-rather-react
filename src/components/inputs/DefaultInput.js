@@ -24,12 +24,14 @@ export default class DefaultInput extends React.Component<DefaultInput.propTypes
     }
 
     render() {
-        const {value, placeholder, styles} = this.props;
-        return (<div className={makeCleanClassName(["default-input-div"])}>
-            {this.PlaceholderTitle()}
-            <input placeholder={placeholder} className={makeCleanClassName(['default-input-input'])} style={styles}
-                   onChange={(event) => this.onInputChange(event)}/>
-        </div>);
+        const {placeholder, styles, classNames = [], classNamesInput = []} = this.props;
+        return (
+            <div className={makeCleanClassName(["default-input-div", ...classNames])}>
+                {this.PlaceholderTitle()}
+                <input placeholder={placeholder}
+                       className={makeCleanClassName(['default-input-input', ...classNamesInput])} style={styles}
+                       onChange={(event) => this.onInputChange(event)}/>
+            </div>);
     }
 }
 
@@ -37,7 +39,8 @@ DefaultInput.propTypes = {
     styles: PropTypes.object,
     placeholder: PropTypes.string.isRequired,
     autocomplete: PropTypes.string,
-    onChange(event): PropTypes.func {
-    },
+    onChange: PropTypes.func,
     value: PropTypes.string,
+    classNames: PropTypes.array,
+    classNamesInput: PropTypes.array,
 };

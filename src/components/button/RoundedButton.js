@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types'; // ES6
 import './RoundedButton.css';
 import {makeCleanClassName} from "../../utils/utils";
-export default class RoundedButton extends React.Component<> {
+export default class RoundedButton extends React.Component<RoundedButton.propTypes> {
     render() {
         const {styleButton, onClick, title, titleStyle, classNames = []} = this.props;
         return (
@@ -20,5 +20,5 @@ RoundedButton.propTypes = {
     onClick: PropTypes.func.isRequired,
     titleStyle:PropTypes.object,
     styleButton:PropTypes.object,
-    classNames:PropTypes.arrayOf(String),
+    classNames:PropTypes.array,
 };

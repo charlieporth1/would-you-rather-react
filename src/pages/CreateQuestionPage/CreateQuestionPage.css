@@ -1,0 +1,25 @@
+.create-question-page-container {
+    justify-content: space-around;
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+    width: 400px;
+}
+.create-question-page-save-btn {
+    margin-top: 25px;
+    width: 100%;
+
+}
+.create-question-page-input {
+    width: 100%;
+    margin: 25px;
+}
+.default-question-h2-create-question {
+   text-align: center;
+}
+.title-create-question {
+    text-align: center;
+}
+.root-container-create-question {
+    text-align: center;
+}

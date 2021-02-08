@@ -13,4 +13,5 @@
     flex-direction: row;
     row-gap: 10px;
     justify-self: center;
+    justify-content: space-between;
 }

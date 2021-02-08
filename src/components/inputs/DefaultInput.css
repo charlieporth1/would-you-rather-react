@@ -4,21 +4,26 @@
     color: slategray;
     margin-top: 45px;
     text-align: left;
+    display: inline;
 }
+
 input[text] {
     font-size: 18px;
     font-family: var(--default-font);
     color: slategray;
 }
+
 .default-input-input {
     font-size: 18px;
     border-radius: 5px;
     border-color: slategray;
     border-width: 3px;
     margin-top: 10px;
+    min-width:fit-content;
+    outline: none;
 }
-
 .default-input-div {
-    wrap-option: warp;
-    display: inline-block;
+    min-width:100%;
+    display: flex;
+    flex-direction: column;
 }

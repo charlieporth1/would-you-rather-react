@@ -1,17 +1,17 @@
 import logo from '../../static/assets/logo.svg';
 import './App.css';
-import * as questionData from '../../_DATA';
 import * as React from "react";
 import QuestionBlock from "../../components/questionBlock/QuestionBlock";
-import {makeCleanClassName, objectToArray, randomNumber} from "../../utils/utils";
+import {makeCleanClassName, randomNumber} from "../../utils/utils";
 import RoundedButton from "../../components/button/RoundedButton";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
 
 class App extends React.Component<App.propTypes> {
     state = {
-        questions: null,
+        questions: [],
         newUserName: '',
+        questionsArray: [],
         currentUser: null,
         currentQuestion: null,
         showPolls: false,
@@ -19,50 +19,33 @@ class App extends React.Component<App.propTypes> {
     };
 
     async componentDidMount(): void {
-        const {store} = this.props;
-        const {userStore} = store.getState();
-        const questions = await questionData._getQuestions();
-        const {user} = await userStore;
-        this.setState({questions, currentUser: user});
+        const {authStore, history} = this.props;
+        authStore(history);
+        await this.getQuestions();
     }
 
-    async user() {
-        const {store, history} = this.props;
-        const {userStore} = store.getState();
-        const {user} = (await userStore);
-        if (user) {
-            return user;
-        } else {
-            console.warn("No User logged in. Logging out");
-            history.push('/login');
-        }
-    }
+    getQuestions = async () => {
+        const {store} = this.props;
+        store.dispatch({type: 'question/getQuestions'});
+        const {userStore, questionStore} = store.getState();
+        const {questions, questionsArray} = await questionStore;
+        const {user} = await userStore;
+        const newUserState = !this.state.currentUser ? {currentUser: user} : {};
+        this.setState({questions, questionsArray, ...newUserState});
+    };
 
     render() {
-        const {store, history} = this.props;
+        const {store, history, authStore} = this.props;
+        const {questions, currentUser, currentQuestion, showPolls, showCreateQuestion, questionsArray} = this.state;
+        const index = randomNumber(0, questionsArray.length - 1);
+        const question = questionsArray[index];
 
-        const {questions, currentUser, currentQuestion, showPolls, showCreateQuestion} = this.state;
-        this.user().then();
 
-        store.subscribe(async () => {
-            await this.user().then((user) => {
-                console.debug("User refreshed");
-                this.setState({currentUser: user})
-            })
-        });
-        if (!questions || !currentUser) {
+        const cqq = !currentQuestion ? question : currentQuestion;
+        if (!questions || !currentUser || !question) {
             return <div/>
         }
 
-        const questionsArray = objectToArray(questions);
-        const question = questionsArray[randomNumber(0, questionsArray.length - 1)];
-
-        store.subscribe(() => {
-            if (question !== currentQuestion && showPolls) {
-                this.setState({currentQuestion: question, showPolls: false})
-            }
-        });
-        const cqq = currentQuestion || question;
         return (
             <div className="App">
                 <header className="App-header">
@@ -70,7 +53,8 @@ class App extends React.Component<App.propTypes> {
                 </header>
                 <div>
                     <QuestionBlock title={`${currentUser.name} would you rather...`}
-                                   question={cqq} store={store}/>
+                                   question={cqq} store={store}
+                                   onUpdate={async () => await this.getQuestions()}/>
                     <div className={makeCleanClassName(['button-grid-app-div'])}>
                         <RoundedButton styleButton={{marginRight: 30}} title="Show Results"
                                        onClick={() => this.setState({showPolls: !showPolls})}/>
@@ -88,5 +72,6 @@ class App extends React.Component<App.propTypes> {
 
 App.propTypes = {
     store: PropTypes.object,
+    authStore: PropTypes.func,
 };
 export default withRouter(App);

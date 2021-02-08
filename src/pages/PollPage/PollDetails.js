@@ -1,7 +1,6 @@
 import ViewPolls from "../../components/viewPolls/ViewPolls";
 import PropTypes from "prop-types";
 import React from "react";
-import * as questionData from "../../_DATA";
 import {withRouter} from "react-router-dom";
 
 class PollDetails extends React.Component<PollDetails.propTypes> {
@@ -13,25 +12,17 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
     }
 
     async componentDidMount(): void {
-        const questions = await questionData._getQuestions();
+        const {store} = this.props;
+        store.dispatch({type: 'question/getQuestions'});
+        const {questionStore} = store.getState();
+        const {questions} = await questionStore;
         this.setState({questions});
-    }
-    async user() {
-        const {store, history} = this.props;
-        const {userStore} = store.getState();
-        const {user} = (await userStore);
-        if (user) {
-            return user;
-        } else {
-            console.warn("No User logged in. Logging out");
-            history.push('/login');
-        }
     }
 
     render() {
-        const {questionId} = this.props;
+        const {questionId, authStore, history} = this.props;
         const {questions} = this.state;
-        this.user().then();
+        // authStore(history);
         if (!questions) {
             return <div/>
         }
@@ -45,7 +36,9 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
 }
 
 PollDetails.propTypes = {
-    questionId: PropTypes.object.isRequired,
+    questionId: PropTypes.string.isRequired,
+    store: PropTypes.object.isRequired,
+    authStore: PropTypes.func,
 };
 
 export default withRouter(PollDetails);
