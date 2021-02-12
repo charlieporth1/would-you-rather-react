@@ -41,6 +41,6 @@ DefaultInput.propTypes = {
     autocomplete: PropTypes.string,
     onChange: PropTypes.func,
     value: PropTypes.string,
-    classNames: PropTypes.array,
-    classNamesInput: PropTypes.array,
+    classNames: PropTypes.arrayOf(PropTypes.string),
+    classNamesInput: PropTypes.arrayOf(PropTypes.string),
 };

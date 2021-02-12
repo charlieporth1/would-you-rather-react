@@ -9,3 +9,6 @@
     background-color: var(--button-primary);
     padding: 10px 7px;
 }
+.default-button-style:active {
+    background-color: var(--primary-dark);
+}

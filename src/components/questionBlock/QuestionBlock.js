@@ -32,7 +32,7 @@ export default class QuestionBlock extends React.Component<QuestionBlock.propTyp
 }
 QuestionBlock.propTypes = {
     title: PropTypes.string.isRequired,
-    classNames: PropTypes.array,
+    classNames: PropTypes.arrayOf(PropTypes.string),
     question: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired,
     onUpdate:PropTypes.func.isRequired,

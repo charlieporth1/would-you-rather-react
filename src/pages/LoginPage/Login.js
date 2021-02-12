@@ -4,7 +4,6 @@ import * as questionData from "../../_DATA";
 import * as React from "react";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
-import {history} from "../../stores/configure.store";
 
 
 class LoginPage extends React.Component<> {
@@ -25,7 +24,7 @@ class LoginPage extends React.Component<> {
 
     render() {
         const {newUserName, users} = this.state;
-        const {store, authStore, history} = this.props;
+        const {store} = this.props;
 
         if (!users) {
             return <div/>;

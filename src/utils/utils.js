@@ -32,12 +32,13 @@ export const reduceToSum = (
     return accumulator + currentValue;
 };
 
-export function runOnce(data)  {
-    if (!this.hasRun) {
+export const runOnce = (data) => {
+    if (!window.hasRun) {
+        window.hasRun = true;
         data();
-        this.hasRun = true;
+        setTimeout(()=> window.hasRun = false, 8000)
     }
-}
+};
 
 export const reduceArrayToPercent = (array1: [] = [], array2: [] = []) => {
     const total1 = array1.length || 0;

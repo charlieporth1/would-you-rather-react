@@ -5,9 +5,12 @@
     --primary-dark: #3f4fb9;
     --primary-light: #516af1;
     --text-primary: #000;
-    --button-primary: var(--primary-dark);
+    --button-primary: var(--primary);
     --button-text-primary: #fff;
     --default-border-radius: 5px;
     --default-shadow: 2px 2px 2px #888888;
     --default-font: Roboto, sans-serif;
+}
+.m-design {
+    box-shadow: 2px 4px 7px #444;
 }

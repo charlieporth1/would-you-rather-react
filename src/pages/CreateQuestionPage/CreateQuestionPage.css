@@ -1,9 +1,5 @@
 .create-question-page-container {
-    justify-content: space-around;
-    flex: 1;
-    flex-direction: column;
-    display: flex;
-    width: 400px;
+    text-align: center;
 }
 .create-question-page-save-btn {
     margin-top: 25px;
@@ -12,14 +8,17 @@
 }
 .create-question-page-input {
     width: 100%;
-    margin: 25px;
 }
 .default-question-h2-create-question {
-   text-align: center;
+    text-align: center;
 }
 .title-create-question {
     text-align: center;
 }
-.root-container-create-question {
-    text-align: center;
+.elements-create-question {
+    justify-content: space-around;
+    flex: 1;
+    flex-direction: column;
+    display: inline-flex;
+    width: 400px;
 }

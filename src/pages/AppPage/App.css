@@ -20,14 +20,14 @@
 }
 .app-options {
   display: grid;
-  grid-template-columns: repeat(2, 200px);
+  grid-template-columns: repeat(2, 250px);
   grid-template-rows: repeat(2, 60px);
   gap: 20px;
 }
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 50vh;
   display: flex;
   flex-direction: column;
   align-items: center;

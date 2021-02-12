@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import {BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
+import {Route, Switch, Redirect} from "react-router";
 import reportWebVitals from './utils/reportWebVitals';
 import LoginPage from "./pages/LoginPage/Login";
 import App from "./pages/AppPage/App";
@@ -11,78 +11,86 @@ import configureStore, {history} from './stores/configure.store'
 import {ConnectedRouter} from 'connected-react-router'
 import CreateQuestionPage from "./pages/CreateQuestionPage/CreateQuestionPage";
 import {isArrayEquals, objectToArray, runOnce} from "./utils/utils";
+import {Routes} from "./static/assets/Routes";
 
 const store = configureStore();
-const isAuthStore = async (history, goHome = false): void => {
-    const isAuthAutoLogOut = async () => {
+export const isAuthStore = async (history, goHome = false): string => {
+    let result;
+    const isAuthAutoLogOut = async (): string => {
         console.debug("isAuth");
         const {userStore} = store.getState();
         const {user} = await userStore;
         if (user && user.id) {
             console.debug("Logged in");
-            if (goHome) {
+            if (goHome || !history) {
                 console.debug("Going home");
-                history.push('/home');
+                return Routes.home;
             }
         } else {
             console.debug("Logged out");
-            history.push('/login');
+            return Routes.login;
         }
     };
+
     const listener = store.subscribe(async () => {
-        await isAuthAutoLogOut();
+        result = await isAuthAutoLogOut();
+        console.log("result ", result);
+        if (history && result)
+            history.push(result);
         if (goHome)
             await listener();
     });
+    result = await isAuthAutoLogOut();
+    return result
 };
 const refreshQuestions = (data): void => {
     console.debug("refreshQuestions");
     const refresher = async () => {
-            const {questionStore} = store.getState();
-            const {questionsArray = [], questions = {}} = await questionStore;
-            const newQuestionsArray = await objectToArray(questions);
-            if (!isArrayEquals(questionsArray, newQuestionsArray)) {
-                console.log("Questions refreshed");
+        const {questionStore} = store.getState();
+        const {questionsArray = [], questions = {}} = await questionStore;
+        const newQuestionsArray = await objectToArray(questions);
+        if (!isArrayEquals(questionsArray, newQuestionsArray)) {
+            console.log("Questions refreshed");
+            runOnce(() => {
                 store.dispatch({type: 'question/getQuestions'});
-                return data;
-            } else {
-                console.log("Questions not refreshed");
-            }
-        const listener = store.subscribe(async () => {
+            });
+            return data;
+        } else {
+            console.log("Questions not refreshed");
+        }
+        store.subscribe(async () => {
             await refresher();
         });
-        // setTimeout(() => listener(), 500);
     };
-
-
 };
-
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
             <ConnectedRouter history={history}>
-                <Router>
+                <div>
                     <Switch>
-                        <Route exact path='/login' render={(props) => <LoginPage {...props} store={store}
+                        <Route exact path={Routes.login} render={(props) => <LoginPage {...props} store={store}
                                                                                  authStore={(history) => isAuthStore(history, true)}/>}/>
-                        <Route exact path='/home' render={(props) => <App {...props} store={store}
+                        <Route exact path={Routes.home} render={(props) => <App {...props} store={store}
                                                                           authStore={(history) => isAuthStore(history)}/>}/>
-                        <Route path="/questions/create"
+                        <Route path={Routes.createQuestion}
                                render={(props) => <CreateQuestionPage {...props}
                                                                       store={store}
-                                                                      />}/> {/* This needs to come first because react doesn't know if create is an id or not*/}
-                        <Route path="/questions/:question_id" render={(props) => <PollDetails {...props} store={store}
-                                                                                              questionId={props.match.params.question_id}/>}/>
-                        <Redirect to={'/login'}/>
-                        {(()=> {
+                                                                      authStore={(history) => isAuthStore(history)}
+                               />}/> {/* This needs to come first because react doesn't know if create is an id or not*/}
+                        <Route path="/questions/:question_id"
+                               render={(props) => <PollDetails {...props} store={store}
+                                                               authStore={(history) => isAuthStore(history)}
+                                                               questionId={props.match.params.question_id}/>}/>
+                        <Redirect to={{pathname: '/login'}}/>
+                        {(() => {
                             refreshQuestions();
                         })()}
                     </Switch>
-                </Router>
+                </div>
             </ConnectedRouter>
         </Provider>
-    </React.StrictMode>
-    ,
+    </React.StrictMode>,
     document.getElementById('root')
 );
 

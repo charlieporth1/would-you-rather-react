@@ -2,7 +2,8 @@ import ViewPolls from "../../components/viewPolls/ViewPolls";
 import PropTypes from "prop-types";
 import React from "react";
 import {withRouter} from "react-router-dom";
-
+import {makeCleanClassName} from "../../utils/utils";
+import './PollDetails.css'
 class PollDetails extends React.Component<PollDetails.propTypes> {
     constructor(props) {
         super(props);
@@ -12,7 +13,8 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
     }
 
     async componentDidMount(): void {
-        const {store} = this.props;
+        const {store, authStore, history} = this.props;
+        authStore(history);
         store.dispatch({type: 'question/getQuestions'});
         const {questionStore} = store.getState();
         const {questions} = await questionStore;
@@ -20,16 +22,17 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
     }
 
     render() {
-        const {questionId, authStore, history} = this.props;
+        const {questionId} = this.props;
         const {questions} = this.state;
-        // authStore(history);
         if (!questions) {
             return <div/>
         }
         const question = questions[questionId];
         return (
-            <div>
-                <ViewPolls question={question} title="Would you rather..."/>
+            <div className={makeCleanClassName(['poll-details-container'])}>
+                <div className={makeCleanClassName(['poll-details-data-element'])}>
+                <ViewPolls containerClass={['view-polls-container', 'm-design']} question={question} title="Would you rather..."/>
+                </div>
             </div>
         )
     }

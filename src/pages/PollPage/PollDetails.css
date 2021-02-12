@@ -1,0 +1,15 @@
+.poll-details-container {
+    display: block;
+}
+.poll-details-data-element {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-top: 20px;
+}
+.view-polls-container {
+    background-color: var(--primary-dark);
+    padding: 25px;
+    border-radius: 10px;
+    elevation: 20deg;
+}

@@ -6,6 +6,8 @@ import {makeCleanClassName, randomNumber} from "../../utils/utils";
 import RoundedButton from "../../components/button/RoundedButton";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
+import {push} from 'connected-react-router'
+import {Routes} from "../../static/assets/Routes";
 const QuestionType = {
     ViewAnsweredQ: "Viewing answered questions",
     ViewUnAnsweredQ: "Viewing unanswered Questions",
@@ -22,7 +24,7 @@ class App extends React.Component<App.propTypes> {
         showCreateQuestion: false,
         isViewAnsweredQ: false,
         isViewUnAnsweredQ: true,
-        questionType:QuestionType.All,
+        questionType:QuestionType.ViewUnAnsweredQ,
     };
 
     async componentDidMount(): void {
@@ -54,6 +56,7 @@ class App extends React.Component<App.propTypes> {
             isViewUnAnsweredQ,
             questionType
         } = this.state;
+
         let filteredQuestionsArray = questionsArray;
         if (isViewAnsweredQ) {
             filteredQuestionsArray = questionsArray.filter((question) => {
@@ -83,6 +86,8 @@ class App extends React.Component<App.propTypes> {
         if (!questions || !currentUser || !question) {
             return <div/>
         }
+        showPolls && store.dispatch(push(`/questions/${cqq.id}`));  //history.push(`/questions/${cqq.id}`);
+        showCreateQuestion && history.push(Routes.createQuestion);
 
         return (
             <div className="App">
@@ -95,14 +100,14 @@ class App extends React.Component<App.propTypes> {
                                    question={cqq} store={store}
                                    onUpdate={async () => await this.getQuestions()}/>
                     <div className={makeCleanClassName(['button-grid-app-div'])}>
-                        <RoundedButton styleButton={{marginRight: 30}} title="Show Results"
-                                       onClick={() => this.setState({showPolls: !showPolls})}/>
-                        <RoundedButton styleButton={{marginLeft: 30}} title="Create Question"
-                                       onClick={() => this.setState({showCreateQuestion: !showCreateQuestion})}/>
                     </div>
                     <div className={makeCleanClassName(['app-options-container'])}>
                         <h3>Options</h3>
                         <div className={makeCleanClassName(['app-options'])}>
+                            <RoundedButton title="Show Results/Leaderboard"
+                                           onClick={() => this.setState({showPolls: !showPolls})}/>
+                            <RoundedButton title="Create Question"
+                                           onClick={() => this.setState({showCreateQuestion: !showCreateQuestion})}/>
                             <RoundedButton title="Toggle view unanswered questions"
                                            onClick={() => this.setState({isViewUnAnsweredQ: !isViewUnAnsweredQ, questionType: QuestionType.ViewUnAnsweredQ})}/>
                             <RoundedButton title="Toggle view answered questions"
@@ -112,8 +117,6 @@ class App extends React.Component<App.propTypes> {
                             <RoundedButton title="Log out" onClick={() => history.push('/login')}/>
                         </div>
                     </div>
-                    {showPolls && history.push(`/questions/${cqq.id}`)}
-                    {showCreateQuestion && history.push(`/questions/create`)}
                 </div>
             </div>
         );
