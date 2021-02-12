@@ -35,7 +35,7 @@ class App extends React.Component<App.propTypes> {
     };
 
     render() {
-        const {store, history, authStore} = this.props;
+        const {store, history} = this.props;
         const {questions, currentUser, currentQuestion, showPolls, showCreateQuestion, questionsArray} = this.state;
         const index = randomNumber(0, questionsArray.length - 1);
         const question = questionsArray[index];
@@ -51,6 +51,7 @@ class App extends React.Component<App.propTypes> {
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
                 </header>
+                <RoundedButton title="Log out" onClick={()=> history.push('/login')}/>
                 <div>
                     <QuestionBlock title={`${currentUser.name} would you rather...`}
                                    question={cqq} store={store}
