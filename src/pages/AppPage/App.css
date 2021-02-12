@@ -15,6 +15,15 @@
 .button-grid-app-div {
   justify-content: space-between;
 }
+.app-options-container {
+  display: inline-block;
+}
+.app-options {
+  display: grid;
+  grid-template-columns: repeat(2, 200px);
+  grid-template-rows: repeat(2, 60px);
+  gap: 20px;
+}
 
 .App-header {
   background-color: #282c34;
