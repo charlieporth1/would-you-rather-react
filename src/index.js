@@ -76,6 +76,9 @@ ReactDOM.render(
                         <Route path={Routes.createQuestion}
                                render={(props) => <CreateQuestionPage {...props}
                                                                       store={store}
+
+
+
                                                                       authStore={(history) => isAuthStore(history)}
                                />}/> {/* This needs to come first because react doesn't know if create is an id or not*/}
                         <Route path="/questions/:question_id"
