@@ -14,9 +14,8 @@ export const objectToArray = async (obj: Object) => {
             keyArray.push(item);
             arrayOfObj.push(obj[item]);
             setTimeout(() => {
-                console.debug(arrayOfObj);
                 resolve(arrayOfObj);
-            }, 500);
+            }, 1000);
         }
     })
 };
@@ -48,7 +47,7 @@ export const simpleSort = (a: any, b: any): number => {
         return simpleCompare(a, b);
     }
 };
-export const timeStampSort = (a: any, b: any): number => {
+export const timeStampSort = (a, b) => {
         return a.timestamp - b.timestamp;
 };
 // Alias function
@@ -65,6 +64,12 @@ export const simpleSortDescending = (
 ): number => {
     return simpleSort(b, a);
 };
+export function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
 export const randomNumber = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -77,11 +82,13 @@ export const reduceToSum = (
     return accumulator + currentValue;
 };
 
-export const runOnce = (data) => {
-    if (!window.hasRun) {
-        window.hasRun = true;
+export const runOnce = (data, windowVar:string = 'hasRun', reRun:boolean = false) => {
+    if (!window[windowVar]) {
+        window[windowVar] = true;
         data();
-        setTimeout(()=> window.hasRun = false, 8000)
+        if (windowVar === 'hasRun' || reRun) {
+            setTimeout(() => window[windowVar] = false, 8000)
+        }
     }
 };
 

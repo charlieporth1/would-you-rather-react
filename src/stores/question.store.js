@@ -5,7 +5,7 @@ async function getQuestions() {
     return questions;
 }
 
-export async function questionReducer(state = {questions: getQuestions(), newQuestion: null, currentQuestion:null, savedQuestion: null, questionsArray: null}, action) {
+export async function questionReducer(state = {questions: getQuestions(), newQuestion: null, currentQuestion:null, savedQuestion: null, questionsArray: []}, action) {
     switch (action.type) {
         case 'counter/incremented':
             return {questions: {}, ...state};
