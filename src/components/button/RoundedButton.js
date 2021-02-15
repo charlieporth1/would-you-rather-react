@@ -7,10 +7,10 @@ export default class RoundedButton extends React.Component<RoundedButton.propTyp
       clicked: false,
     };
     render() {
-        const {styleButton, title, titleStyle, classNames = [], onClick} = this.props;
+        const {styleButton, title, titleStyle, classNames = [], onClick, isValid = false} = this.props;
         const {clicked} = this.state;
         return (
-            <button className={makeCleanClassName([...classNames, "default-button-style", 'm-design'])} style={styleButton} onClick={()=>onClick()}>
+            <button className={makeCleanClassName([...classNames, "default-button-style", 'm-design', (isValid && 'default-button-style-invalid')])} style={styleButton} onClick={()=>onClick()}>
                 <div  className={makeCleanClassName(["default-text-style"])} style={titleStyle}>{title}</div>
             </button>
 
@@ -24,5 +24,6 @@ RoundedButton.propTypes = {
     onClick: PropTypes.func.isRequired,
     titleStyle:PropTypes.object,
     styleButton:PropTypes.object,
-    classNames:PropTypes.arrayOf(PropTypes.string)
+    classNames:PropTypes.arrayOf(PropTypes.string),
+    isValid:PropTypes.bool,
 };

@@ -15,6 +15,16 @@
 .button-grid-app-div {
   justify-content: space-between;
 }
+.question-type-tabs-app {
+  width: 100%;
+}
+.question-tab-button {
+  width: 50%;
+  border-radius: 0 !important;
+}
+.question-tab-button-tab-clicked {
+  background-color: var(--primary-dark) !important;
+}
 .app-options-container {
   display: inline-block;
 }

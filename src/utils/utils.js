@@ -20,6 +20,51 @@ export const objectToArray = async (obj: Object) => {
         }
     })
 };
+export const reduceToBoolean = (
+    accumulator: boolean,
+    currentValue: boolean
+): boolean => {
+    return true === (accumulator === currentValue);
+};
+// Simple sort array function
+// used as array.sort(simpleSort)
+export const simpleSort = (a: any, b: any): number => {
+    const simpleCompare = (alpha: any | any, bravo: any) => {
+        if (alpha > bravo) {
+            return 1;
+        } else if (alpha < bravo) {
+            return -1;
+        } else {
+            return 0;
+        }
+    };
+    if (typeof a === 'number' && typeof b === 'number') {
+        return a - b;
+    } else if (typeof a === 'string' && typeof b === 'string') {
+        return a.localeCompare(b);
+    } else if (typeof a === 'object' && typeof b === 'object') {
+        return simpleCompare(a, b);
+    } else {
+        return simpleCompare(a, b);
+    }
+};
+export const timeStampSort = (a: any, b: any): number => {
+        return a.timestamp - b.timestamp;
+};
+// Alias function
+export const simpleSortAscending = (
+    a: any,
+    b: any
+): number => {
+    return simpleSort(a, b);
+};
+// reverse function
+export const simpleSortDescending = (
+    a: any,
+    b: any
+): number => {
+    return simpleSort(b, a);
+};
 
 export const randomNumber = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min)) + min;

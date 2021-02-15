@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import './UserSelector.css';
-import {makeCleanClassName, objectToArray} from "../../utils/utils";
+import {makeCleanClassName, objectToArray, runOnce} from "../../utils/utils";
 const defaultUser = {name: 'Select User', id: "selectuser"};
 export default class UserSelector extends React.Component<UserSelector.propTypes> {
     state = {
@@ -11,8 +11,12 @@ export default class UserSelector extends React.Component<UserSelector.propTypes
 
     onStatusChange(userId) {
         if (defaultUser.id !== userId) {
-            const {store} = this.props;
+            const {store, onUpdate} = this.props;
             store.dispatch({type: "login/id", payload: {userId}});
+            if (onUpdate) {
+                runOnce(() => onUpdate());
+            }
+
         } else {
             alert("Not a user select another user")
         }
@@ -39,4 +43,5 @@ export default class UserSelector extends React.Component<UserSelector.propTypes
 UserSelector.propTypes = {
     users: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired,
+    onUpdate:PropTypes.func,
 };

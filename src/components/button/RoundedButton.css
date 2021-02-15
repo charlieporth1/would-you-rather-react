@@ -12,3 +12,6 @@
 .default-button-style:active {
     background-color: var(--primary-dark);
 }
+.default-button-style-invalid {
+    background-color: var(--default-disabled) !important;
+}

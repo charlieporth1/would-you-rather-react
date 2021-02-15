@@ -12,9 +12,10 @@ import {ConnectedRouter} from 'connected-react-router'
 import CreateQuestionPage from "./pages/CreateQuestionPage/CreateQuestionPage";
 import {isArrayEquals, objectToArray, runOnce} from "./utils/utils";
 import {Routes} from "./static/assets/Routes";
+import Leaderboard from "./pages/Leaderboard/Leaderboard";
 
 const store = configureStore();
-export const isAuthStore = async (history, goHome = false): string => {
+export const isAuthStore = (history, goHome = false): string => {
     let result;
     const isAuthAutoLogOut = async (): string => {
         console.debug("isAuth");
@@ -40,8 +41,6 @@ export const isAuthStore = async (history, goHome = false): string => {
         if (goHome)
             await listener();
     });
-    result = await isAuthAutoLogOut();
-    return result
 };
 const refreshQuestions = (data): void => {
     console.debug("refreshQuestions");
@@ -70,13 +69,12 @@ ReactDOM.render(
                 <div>
                     <Switch>
                         <Route exact path={Routes.login} render={(props) => <LoginPage {...props} store={store}
-                                                                                 authStore={(history) => isAuthStore(history, true)}/>}/>
+                                                                                       authStore={(history) => isAuthStore(history, true)}/>}/>
                         <Route exact path={Routes.home} render={(props) => <App {...props} store={store}
-                                                                          authStore={(history) => isAuthStore(history)}/>}/>
+                                                                                authStore={(history) => isAuthStore(history)}/>}/>
                         <Route path={Routes.createQuestion}
                                render={(props) => <CreateQuestionPage {...props}
                                                                       store={store}
-
 
 
                                                                       authStore={(history) => isAuthStore(history)}
@@ -85,6 +83,9 @@ ReactDOM.render(
                                render={(props) => <PollDetails {...props} store={store}
                                                                authStore={(history) => isAuthStore(history)}
                                                                questionId={props.match.params.question_id}/>}/>
+                        <Route path="/leaderboard"
+                               render={(props) => <Leaderboard {...props} store={store}
+                                                               authStore={(history) => isAuthStore(history)}/>}/>
                         <Redirect to={{pathname: '/login'}}/>
                         {(() => {
                             refreshQuestions();

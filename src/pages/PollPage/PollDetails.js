@@ -4,6 +4,10 @@ import React from "react";
 import {withRouter} from "react-router-dom";
 import {makeCleanClassName} from "../../utils/utils";
 import './PollDetails.css'
+import RoundedButton from "../../components/button/RoundedButton";
+import {Routes} from "../../static/assets/Routes";
+import {push} from 'connected-react-router'
+
 class PollDetails extends React.Component<PollDetails.propTypes> {
     constructor(props) {
         super(props);
@@ -22,7 +26,7 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
     }
 
     render() {
-        const {questionId} = this.props;
+        const {questionId, store} = this.props;
         const {questions} = this.state;
         if (!questions) {
             return <div/>
@@ -31,7 +35,9 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
         return (
             <div className={makeCleanClassName(['poll-details-container'])}>
                 <div className={makeCleanClassName(['poll-details-data-element'])}>
-                <ViewPolls containerClass={['view-polls-container', 'm-design']} question={question} title="Would you rather..."/>
+                    <ViewPolls containerClass={['view-polls-container', 'm-design']} question={question}
+                               title="Would you rather..."/>
+                    <RoundedButton title="Next question" onClick={() => store.dispatch(push(Routes.home))}/>
                 </div>
             </div>
         )
@@ -41,7 +47,7 @@ class PollDetails extends React.Component<PollDetails.propTypes> {
 PollDetails.propTypes = {
     questionId: PropTypes.string.isRequired,
     store: PropTypes.object.isRequired,
-    authStore: PropTypes.func,
+    authStore: PropTypes.func.isRequired,
 };
 
 export default withRouter(PollDetails);

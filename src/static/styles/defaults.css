@@ -10,6 +10,7 @@
     --default-border-radius: 5px;
     --default-shadow: 2px 2px 2px #888888;
     --default-font: Roboto, sans-serif;
+    --default-disabled: 2px 2px 2px #888888;
 }
 .m-design {
     box-shadow: 2px 4px 7px #444;

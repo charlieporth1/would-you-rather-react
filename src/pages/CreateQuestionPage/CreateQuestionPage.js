@@ -56,6 +56,6 @@ class CreateQuestionPage extends React.Component<CreateQuestionPage.propTypes> {
 
 CreateQuestionPage.propTypes = {
     store: PropTypes.object.isRequired,
-    authStore: PropTypes.func,
+    authStore: PropTypes.func.isRequired,
 };
 export default withRouter(CreateQuestionPage);
