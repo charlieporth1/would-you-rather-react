@@ -19,19 +19,33 @@ class CreateQuestionPage extends React.Component<CreateQuestionPage.propTypes> {
 
     saveNewQuestion = async ({optionOneText, optionTwoText, author}) => {
         const {store, history} = this.props;
-        store.dispatch({type: 'question/addQuestion', payload: {optionOneText, optionTwoText, author}});
-        alert("Question Saved");
-        store.dispatch(push(Routes.home));
-    };
+        await store.dispatch({type: 'question/addQuestion', payload: {optionOneText, optionTwoText, author}});
+        setTimeout(async () => {
 
+
+            await store.dispatch({type: 'question/getQuestions'});
+            const {questionStore} = store.getState();
+            const {questions, questionsArray} = await questionStore;
+            const state = {
+                questions,
+                questionsArrays:questionsArray,
+            };
+            // alert("Question Saved");
+            setTimeout(() => store.dispatch(push(Routes.home, state)), 250);
+        }, 250)
+    };
+    componentDidMount(): void {
+        const { authStore, history} = this.props;
+        authStore(history);
+    }
 
     async onSave() {
         const {optionOneText, optionTwoText} = this.state;
         const {store, authStore, history} = this.props;
         const {userStore} = store.getState();
+        authStore(history);
         const {user} = await userStore;
         const author = user.id;
-        authStore(history);
         await this.saveNewQuestion({optionOneText, optionTwoText, author})
     }
 

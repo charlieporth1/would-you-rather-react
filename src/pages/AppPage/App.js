@@ -2,7 +2,7 @@ import logo from '../../static/assets/logo.svg';
 import './App.css';
 import * as React from "react";
 import QuestionBlock from "../../components/questionBlock/QuestionBlock";
-import {makeCleanClassName, randomNumber, timeStampSort} from "../../utils/utils";
+import {combineArrays, makeCleanClassName, randomNumber, timeStampSort} from "../../utils/utils";
 import RoundedButton from "../../components/button/RoundedButton";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
@@ -14,8 +14,9 @@ export const QuestionType = {
     ViewUnAnsweredQ: "unanswered Questions",
     All: "all questions"
 };
+
 class App extends React.Component<App.propTypes> {
-    constructor(props:any) {
+    constructor(props: any) {
         super(props);
         this.state = {
             questions: null,
@@ -34,36 +35,44 @@ class App extends React.Component<App.propTypes> {
     }
 
     _isMounted = false;
+
     async componentWillMount(): void {
-        const {authStore, history} = this.props;
+        const {authStore, history, store} = this.props;
         authStore(history);
         const {isViewAnsweredQ, isViewUnAnsweredQ} = this.state;
-        const smallState = {isViewAnsweredQ, isViewUnAnsweredQ};
+        const {router} = store.getState() || {location: null};
+        const {state} = router.location;
+        const {questionsArrays} = state || {questionsArrays: []};
+        const smallState = {isViewAnsweredQ, isViewUnAnsweredQ, questionsArrays};
         await this.getQuestions(smallState);
     }
+
     componentDidMount() {
         this._isMounted = true;
     }
 
     async getQuestions(additionalStateUpdates?) {
         const {store} = this.props;
+        const {questionsArrays} = additionalStateUpdates;
         let {
             currentUser,
         } = this.state;
         await store.dispatch({type: 'question/getQuestions'});
         const {userStore, questionStore} = store.getState();
 
-        const {questions, questionsArray} = await questionStore;
+        let {questions, questionsArray} = await questionStore;
+        questionsArray = await combineArrays(questionsArray, questionsArrays);
+
         const {user} = await userStore;
         currentUser = (!!currentUser) ? currentUser : user;
         const filteredQuestionsArray = await this.filteredQuestionsUpdate(questionsArray, currentUser, additionalStateUpdates);
-        this.setState({
+        setTimeout(() => this.setState({
             questions,
             questionsArray,
             currentUser,
             filteredQuestionsArray,
             ...additionalStateUpdates
-        });
+        }), 60);
     };
 
     async onQuestionAnswer(questionId) {
@@ -79,45 +88,31 @@ class App extends React.Component<App.propTypes> {
             isViewUnAnsweredQ,
         } = currentState;
 
-            const userId = (currentUser || {id: ''}).id;
-            if (isViewAnsweredQ) {
-                const answeredQuestions = questionsArray.filter((question) => {
-                    const isOptionOne: boolean = (question.optionOne.votes.includes(userId));
-                    const isOptionTwo: boolean = (question.optionTwo.votes.includes(userId));
-                    return isOptionOne === true || isOptionTwo === true;
+        const userId = (currentUser || {id: ''}).id;
+        if (isViewAnsweredQ) {
+            const answeredQuestions = questionsArray.filter((question) => {
+                const isOptionOne: boolean = (question.optionOne.votes.includes(userId));
+                const isOptionTwo: boolean = (question.optionTwo.votes.includes(userId));
+                return isOptionOne === true || isOptionTwo === true;
 
-                }).sort(timeStampSort);
-                return answeredQuestions;
-            } else if (isViewUnAnsweredQ) {
-                const unansweredQuestions = questionsArray.filter((question) => {
-                    const notOptionOne: boolean = (question.optionOne.votes.includes(userId));
-                    const notOptionTwo: boolean = (question.optionTwo.votes.includes(userId));
+            }).sort(timeStampSort);
+            return answeredQuestions;
+        } else if (isViewUnAnsweredQ) {
+            const unansweredQuestions = questionsArray.filter((question) => {
+                const notOptionOne: boolean = (question.optionOne.votes.includes(userId));
+                const notOptionTwo: boolean = (question.optionTwo.votes.includes(userId));
 
-                    return notOptionOne === false && notOptionTwo === false;
+                return notOptionOne === false && notOptionTwo === false;
 
-                }).sort(timeStampSort);
-                return unansweredQuestions;
+            }).sort(timeStampSort);
+            return unansweredQuestions;
 
-            } else {
-                const filteredQuestionsArray: [] = questionsArray.sort(timeStampSort);
-                return filteredQuestionsArray;
-            }
+        } else {
+            const filteredQuestionsArray: [] = questionsArray.sort(timeStampSort);
+            return filteredQuestionsArray;
+        }
     };
-    renderPolls = (filteredQuestionsArray, questionType, currentUser, store)=> {
-       return (<div>{filteredQuestionsArray.length > 0 ? filteredQuestionsArray.map((question) => {
-                const isFirstQuestion = question.id === filteredQuestionsArray[0].id;
-                const title = isFirstQuestion ? `${currentUser.name} would you rather...` : '';
-                return (
-                    <QuestionBlock
-                        key={question.id}
-                        title={title}
-                        question={question}
-                        store={store}
-                        onUpdate={async () => await this.onQuestionAnswer(question.id)}/>
-                )
-            }) :
-           <div>No {questionType} left</div>}</div>)
-    };
+
     updateQuestion(filteredQuestionsArray: [] = [], additionalStateUpdates?) {
         const currentState = additionalStateUpdates || this.state;
         const {
@@ -182,7 +177,19 @@ class App extends React.Component<App.propTypes> {
                     <div>
                         <h2>Viewing {questionType}</h2>
                         <div className={makeCleanClassName(['button-grid-app-div'])}>
-                            {this.renderPolls(filteredQuestionsArray, questionType, currentUser,store)}
+                            {filteredQuestionsArray.length > 0 ? filteredQuestionsArray.map((question) => {
+                                    const isFirstQuestion = question.id === filteredQuestionsArray[0].id;
+                                    const title = isFirstQuestion ? `${currentUser.name} would you rather...` : '';
+                                    return (
+                                        <QuestionBlock
+                                            key={question.id}
+                                            title={title}
+                                            question={question}
+                                            store={store}
+                                            onUpdate={async () => await this.onQuestionAnswer(question.id)}/>
+                                    )
+                                }) :
+                                <div>No {questionType} left</div>}
                         </div>
                         <div className={makeCleanClassName(['app-options-container'])}>
                             <h3>Options</h3>
@@ -193,10 +200,10 @@ class App extends React.Component<App.propTypes> {
                                                onClick={() => this.setState({showCreateQuestion: !showCreateQuestion})}/>
                                 <RoundedButton title="View all questions (Random order)"
                                                onClick={() => this.setState({
-                                                       isViewAnsweredQ: false,
-                                                       isViewUnAnsweredQ: false,
-                                                       questionType: QuestionType.All
-                                                   })} />
+                                                   isViewAnsweredQ: false,
+                                                   isViewUnAnsweredQ: false,
+                                                   questionType: QuestionType.All
+                                               })}/>
                                 <RoundedButton title="Log out" onClick={() => store.dispatch(push(Routes.login))}/>
                             </div>
                             <div>

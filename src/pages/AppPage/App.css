@@ -16,10 +16,11 @@
 }
 .button-grid-app-div {
   justify-content: space-between;
-  column-count: 1;
-  flex-direction: column;
   display: flex;
-  height: 100%
+  flex: 1;
+  flex-direction: column;
+  column-count: 1;
+
 }
 .question-type-tabs-app {
   width: 100%;

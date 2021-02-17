@@ -8,15 +8,23 @@ export const uppercaseFirstLetter = (str: string = 'charles') => {
 };
 export const objectToArray = async (obj: Object) => {
     return new Promise(resolve => {
-        const keyArray = [];
         const arrayOfObj = [];
         for (let item in obj) {
-            keyArray.push(item);
             arrayOfObj.push(obj[item]);
-            setTimeout(() => resolve(arrayOfObj), 250);
+            setTimeout(() => resolve(arrayOfObj.filter(onlyUnique)), 100);
         }
     })
 };
+export const onlyUnique = (value: any, index: number, self: any[]): boolean => {
+    return self.indexOf(value) === index;
+};
+export const onlyUniqueAndNil = (value: any, index: number, self: any[]): boolean => {
+    return !!value && self.indexOf(value) === index;
+};
+export const filterNil = (value: any): boolean => {
+    return !!value;
+};
+
 export const reduceToBoolean = (
     accumulator: boolean,
     currentValue: boolean
@@ -105,3 +113,9 @@ export const reduceArrayToPercent = (array1: [] = [], array2: [] = []) => {
 export const isArrayEquals = (arrayOne: [] = [], ArrayTwo: [] = []) => {
     return JSON.stringify(arrayOne) === JSON.stringify(ArrayTwo)
 };
+export const combineArrays = async (...arrays: []) => [].concat(...arrays).filter(onlyUniqueAndNil);
+    // return new Promise((resolve) => {
+    //     const combine = [].concat(...arrays).filter(onlyUniqueAndNil);
+    //     setTimeout(() => resolve(combine), 250);
+    // });
+// };
