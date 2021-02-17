@@ -9,3 +9,8 @@
     display: inline-block;
     justify-self: center !important;
 }
+
+.view-polls-answered-question {
+    background-color: var(--primary-dark) !important;
+    border-radius: 5px;
+}

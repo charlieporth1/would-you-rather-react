@@ -102,9 +102,9 @@ export const runOnce = (data, windowVar: string = 'hasRun', reRun: boolean = fal
 export const reduceArrayToPercent = (array1: [] = [], array2: [] = []) => {
     const total1 = array1.length || 0;
     const total2 = array2.length || 0;
-    const total = total1 + total2;
-    const array1Percent = total1 / total * 100;
-    const array2Percent = total2 / total * 100;
+    const total = total1 + total2 || 0;
+    const array1Percent = total1 / total * 100 || 0;
+    const array2Percent = total2 / total * 100 || 0;
     return {count: total, array1Percent, array2Percent}
 };
 

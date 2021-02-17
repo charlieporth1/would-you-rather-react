@@ -8,7 +8,7 @@
     margin-top: 20px;
 }
 .view-polls-container {
-    background-color: var(--primary-dark);
+    background-color: var(--primary-light);
     padding: 25px;
     border-radius: 10px;
     elevation: 20deg;

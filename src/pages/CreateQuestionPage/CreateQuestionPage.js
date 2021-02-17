@@ -30,7 +30,7 @@ class CreateQuestionPage extends React.Component<CreateQuestionPage.propTypes> {
                 questions,
                 questionsArrays:questionsArray,
             };
-            // alert("Question Saved");
+            alert("Question Saved");
             setTimeout(() => store.dispatch(push(Routes.home, state)), 250);
         }, 250)
     };

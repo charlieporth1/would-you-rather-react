@@ -53,7 +53,7 @@ class App extends React.Component<App.propTypes> {
 
     async getQuestions(additionalStateUpdates?) {
         const {store} = this.props;
-        const {questionsArrays} = additionalStateUpdates;
+        const {questionsArrays} = additionalStateUpdates || {questionsArrays: []};
         let {
             currentUser,
         } = this.state;
@@ -77,8 +77,9 @@ class App extends React.Component<App.propTypes> {
 
     async onQuestionAnswer(questionId) {
         const {store} = this.props;
+        const {currentUser} = this.state;
         await this.getQuestions();
-        setTimeout(() => store.dispatch(push(`/questions/${questionId}`, {...this.state})), 10)
+        setTimeout(() => store.dispatch(push(`/questions/${questionId}`, {currentUser})), 10)
     };
 
     async filteredQuestionsUpdate(questionsArray, currentUser, additionalStateUpdates?) {
