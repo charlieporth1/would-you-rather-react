@@ -28,12 +28,12 @@ export default class QuestionBlock extends React.Component<QuestionBlock.propTyp
         const qid = question.id;
         const authedUser = user.id;
         await store.dispatch({type: 'question/addAnswer', payload: {authedUser, qid, answer}});
-        setTimeout(() => onUpdate(), 250);
+        setTimeout(() => onUpdate(), 5);
 
     }
 }
 QuestionBlock.propTypes = {
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     classNames: PropTypes.arrayOf(PropTypes.string),
     question: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired,

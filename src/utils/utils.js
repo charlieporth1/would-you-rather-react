@@ -13,9 +13,7 @@ export const objectToArray = async (obj: Object) => {
         for (let item in obj) {
             keyArray.push(item);
             arrayOfObj.push(obj[item]);
-            setTimeout(() => {
-                resolve(arrayOfObj);
-            }, 1000);
+            setTimeout(() => resolve(arrayOfObj), 250);
         }
     })
 };
@@ -48,7 +46,7 @@ export const simpleSort = (a: any, b: any): number => {
     }
 };
 export const timeStampSort = (a, b) => {
-        return a.timestamp - b.timestamp;
+    return a.timestamp - b.timestamp;
 };
 // Alias function
 export const simpleSortAscending = (
@@ -64,8 +62,9 @@ export const simpleSortDescending = (
 ): number => {
     return simpleSort(b, a);
 };
+
 export function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
         let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
@@ -82,7 +81,7 @@ export const reduceToSum = (
     return accumulator + currentValue;
 };
 
-export const runOnce = (data, windowVar:string = 'hasRun', reRun:boolean = false) => {
+export const runOnce = (data, windowVar: string = 'hasRun', reRun: boolean = false) => {
     if (!window[windowVar]) {
         window[windowVar] = true;
         data();

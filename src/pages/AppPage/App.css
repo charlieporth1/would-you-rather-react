@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  height: 100%;
+  width: 100%;
 }
 
 .App-logo {
@@ -14,6 +16,10 @@
 }
 .button-grid-app-div {
   justify-content: space-between;
+  column-count: 1;
+  flex-direction: column;
+  display: flex;
+  height: 100%
 }
 .question-type-tabs-app {
   width: 100%;

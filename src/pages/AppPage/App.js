@@ -9,102 +9,116 @@ import {withRouter} from "react-router-dom";
 import {push} from 'connected-react-router'
 import {Routes} from "../../static/assets/Routes";
 
-const QuestionType = {
+export const QuestionType = {
     ViewAnsweredQ: "answered questions",
     ViewUnAnsweredQ: "unanswered Questions",
     All: "all questions"
 };
-
 class App extends React.Component<App.propTypes> {
-    state = {
-        questions: null,
-        newUserName: '',
-        questionsArray: [],
-        currentUser: null,
-        currentQuestion: null,
-        showPolls: false,
-        showCreateQuestion: false,
-        isViewAnsweredQ: false,
-        isViewUnAnsweredQ: true,
-        questionType: QuestionType.ViewUnAnsweredQ,
-        filteredQuestionsArray: [],
-    };
+    constructor(props:any) {
+        super(props);
+        this.state = {
+            questions: null,
+            newUserName: '',
+            questionsArray: [],
+            currentUser: null,
+            currentQuestion: null,
+            showPolls: false,
+            showCreateQuestion: false,
+            isViewAnsweredQ: false,
+            isViewUnAnsweredQ: true,
+            questionType: QuestionType.ViewUnAnsweredQ,
+            filteredQuestionsArray: [],
+        };
 
-    async componentDidMount(): void {
+    }
+
+    _isMounted = false;
+    async componentWillMount(): void {
         const {authStore, history} = this.props;
         authStore(history);
         const {isViewAnsweredQ, isViewUnAnsweredQ} = this.state;
         const smallState = {isViewAnsweredQ, isViewUnAnsweredQ};
         await this.getQuestions(smallState);
     }
+    componentDidMount() {
+        this._isMounted = true;
+    }
 
-    getQuestions = async (additionalStateUpdates?) => {
+    async getQuestions(additionalStateUpdates?) {
         const {store} = this.props;
         let {
             currentUser,
         } = this.state;
-        store.dispatch({type: 'question/getQuestions'});
+        await store.dispatch({type: 'question/getQuestions'});
         const {userStore, questionStore} = store.getState();
 
         const {questions, questionsArray} = await questionStore;
         const {user} = await userStore;
-
-        currentUser = currentUser ? currentUser : user;
-
-        // const filteredQuestionsArray = currentUser ? this.filteredQuestionsUpdate(currentUser, additionalStateUpdates) : questionsArray;
-        // console.log("filteredQuestionsArray", filteredQuestionsArray);
-        // const currentQuestion = this.updateQuestion(filteredQuestionsArray, additionalStateUpdates);
-        // console.log("currentQuestion", currentQuestion)
-        // filteredQuestionsArray,
-        //     currentQuestion,
+        currentUser = (!!currentUser) ? currentUser : user;
+        const filteredQuestionsArray = await this.filteredQuestionsUpdate(questionsArray, currentUser, additionalStateUpdates);
         this.setState({
             questions,
             questionsArray,
             currentUser,
-
+            filteredQuestionsArray,
             ...additionalStateUpdates
         });
     };
 
-    onQuestionAnswer = async (questionId) => {
+    async onQuestionAnswer(questionId) {
         const {store} = this.props;
         await this.getQuestions();
-        setTimeout(() => store.dispatch(push(`/questions/${questionId}`, {...this.state})), 750)
+        setTimeout(() => store.dispatch(push(`/questions/${questionId}`, {...this.state})), 10)
     };
 
-    filteredQuestionsUpdate (currentUser, additionalStateUpdates?) {
-        const {questionsArray} = this.state;
+    async filteredQuestionsUpdate(questionsArray, currentUser, additionalStateUpdates?) {
         const currentState = additionalStateUpdates || this.state;
         const {
             isViewAnsweredQ,
             isViewUnAnsweredQ,
         } = currentState;
-        const answeredQuestionFilter = (value, index, self) => {
-            return value.toString() === currentUser.id.toString();
-        };
 
-        if (isViewAnsweredQ) {
-            return questionsArray.filter((question) => {
-                const isOptionOne: boolean = (question.optionOne.votes.filter(answeredQuestionFilter).length > 0);
-                const isOptionTwo: boolean = (question.optionTwo.votes.filter(answeredQuestionFilter).length > 0);
-                return isOptionOne || isOptionTwo;
+            const userId = (currentUser || {id: ''}).id;
+            if (isViewAnsweredQ) {
+                const answeredQuestions = questionsArray.filter((question) => {
+                    const isOptionOne: boolean = (question.optionOne.votes.includes(userId));
+                    const isOptionTwo: boolean = (question.optionTwo.votes.includes(userId));
+                    return isOptionOne === true || isOptionTwo === true;
 
-            }).sort(timeStampSort);
+                }).sort(timeStampSort);
+                return answeredQuestions;
+            } else if (isViewUnAnsweredQ) {
+                const unansweredQuestions = questionsArray.filter((question) => {
+                    const notOptionOne: boolean = (question.optionOne.votes.includes(userId));
+                    const notOptionTwo: boolean = (question.optionTwo.votes.includes(userId));
 
-        } else if (isViewUnAnsweredQ) {
-            return questionsArray.filter((question) => {
-                const notOptionOne: boolean = (question.optionOne.votes.filter(answeredQuestionFilter).length === 0);
-                const notOptionTwo: boolean = (question.optionTwo.votes.filter(answeredQuestionFilter).length === 0);
+                    return notOptionOne === false && notOptionTwo === false;
 
-                return notOptionOne && notOptionTwo;
+                }).sort(timeStampSort);
+                return unansweredQuestions;
 
-            }).sort(timeStampSort);
-        } else {
-            let filteredQuestionsArray: [] = questionsArray.sort(timeStampSort);
-            return filteredQuestionsArray;
-        }
+            } else {
+                const filteredQuestionsArray: [] = questionsArray.sort(timeStampSort);
+                return filteredQuestionsArray;
+            }
     };
-    updateQuestion (filteredQuestionsArray: [] = [], additionalStateUpdates?)  {
+    renderPolls = (filteredQuestionsArray, questionType, currentUser, store)=> {
+       return (<div>{filteredQuestionsArray.length > 0 ? filteredQuestionsArray.map((question) => {
+                const isFirstQuestion = question.id === filteredQuestionsArray[0].id;
+                const title = isFirstQuestion ? `${currentUser.name} would you rather...` : '';
+                return (
+                    <QuestionBlock
+                        key={question.id}
+                        title={title}
+                        question={question}
+                        store={store}
+                        onUpdate={async () => await this.onQuestionAnswer(question.id)}/>
+                )
+            }) :
+           <div>No {questionType} left</div>}</div>)
+    };
+    updateQuestion(filteredQuestionsArray: [] = [], additionalStateUpdates?) {
         const currentState = additionalStateUpdates || this.state;
         const {
             isViewAnsweredQ,
@@ -128,75 +142,65 @@ class App extends React.Component<App.propTypes> {
         const {
             questions,
             currentUser,
-            currentQuestion,
-            showPolls,
-            showCreateQuestion,
             isViewAnsweredQ,
             isViewUnAnsweredQ,
             questionType,
-            questionsArray,
+            showPolls,
+            showCreateQuestion,
+            filteredQuestionsArray = [],
         } = this.state;
 
-        if (!questions || !currentUser)
+        if (!questions || !currentUser || !this._isMounted) {
             return <div/>;
-
-        const filteredQuestionsArray = this.filteredQuestionsUpdate( currentUser);
-        const question = this.updateQuestion(filteredQuestionsArray);
+        }
 
         showPolls && store.dispatch(push(Routes.leaderboard));
         showCreateQuestion && store.dispatch(push(Routes.createQuestion));
-
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo"/>
                 </header>
-                <div>
-                    <div className={makeCleanClassName(['question-type-tabs-app'])}>
-                        <RoundedButton
-                            classNames={['question-tab-button', (isViewUnAnsweredQ ? 'question-tab-button-tab-clicked' : '')]}
-                            title="View unanswered questions"
-                            onClick={async () => await this.getQuestions({
-                                isViewUnAnsweredQ: true,
-                                isViewAnsweredQ: false,
-                                questionType: QuestionType.ViewUnAnsweredQ
-                            })}/>
-                        <RoundedButton
-                            classNames={['question-tab-button', (isViewAnsweredQ ? 'question-tab-button-tab-clicked' : '')]}
-                            title="View answered questions"
-                            onClick={async () => await this.getQuestions({
-                                isViewUnAnsweredQ: false,
-                                isViewAnsweredQ: true,
-                                questionType: QuestionType.ViewAnsweredQ
-                            })}/>
-                    </div>
-                    <h2>Viewing {questionType}</h2>
-                    {question ? (<div className={makeCleanClassName(['button-grid-app-div'])}>
-                        <QuestionBlock
-                            title={`${currentUser.name} would you rather...`}
-                            question={question}
-                            store={store}
-                            onUpdate={async () => await this.onQuestionAnswer(question.id)}/>
-                    </div>) : <div>No {questionType} left</div>
-                    }
-                    <div className={makeCleanClassName(['app-options-container'])}>
-                        <h3>Options</h3>
-                        <div className={makeCleanClassName(['app-options'])}>
-                            <RoundedButton title="Show Leaderboard"
-                                           onClick={() => this.setState({showPolls: !showPolls})}/>
-                            <RoundedButton title="Create Question"
-                                           onClick={() => {
-                                               this.setState({showCreateQuestion: !showCreateQuestion});
-                                           }}/>
-                            <RoundedButton title="View all questions (Random order)"
-                                           onClick={() => this.setState({
-                                               isViewAnsweredQ: false,
-                                               isViewUnAnsweredQ: false,
-                                               questionType: QuestionType.All
-                                           })}/>
-                            <RoundedButton title="Log out" onClick={() => store.dispatch(push(Routes.login))}/>
+                <div className={makeCleanClassName(['question-type-tabs-app'])}>
+                    <RoundedButton
+                        classNames={['question-tab-button', (isViewUnAnsweredQ ? 'question-tab-button-tab-clicked' : '')]}
+                        title="View unanswered questions"
+                        onClick={async () => await this.getQuestions({
+                            isViewUnAnsweredQ: true,
+                            isViewAnsweredQ: false,
+                            questionType: QuestionType.ViewUnAnsweredQ
+                        })}/>
+                    <RoundedButton
+                        classNames={['question-tab-button', (isViewAnsweredQ ? 'question-tab-button-tab-clicked' : '')]}
+                        title="View answered questions"
+                        onClick={async () => await this.getQuestions({
+                            isViewUnAnsweredQ: false,
+                            isViewAnsweredQ: true,
+                            questionType: QuestionType.ViewAnsweredQ
+                        })}/>
+
+                    <div>
+                        <h2>Viewing {questionType}</h2>
+                        <div className={makeCleanClassName(['button-grid-app-div'])}>
+                            {this.renderPolls(filteredQuestionsArray, questionType, currentUser,store)}
                         </div>
-                        <div>
+                        <div className={makeCleanClassName(['app-options-container'])}>
+                            <h3>Options</h3>
+                            <div className={makeCleanClassName(['app-options'])}>
+                                <RoundedButton title="Show Leaderboard"
+                                               onClick={() => this.setState({showPolls: !showPolls})}/>
+                                <RoundedButton title="Create Question"
+                                               onClick={() => this.setState({showCreateQuestion: !showCreateQuestion})}/>
+                                <RoundedButton title="View all questions (Random order)"
+                                               onClick={() => this.setState({
+                                                       isViewAnsweredQ: false,
+                                                       isViewUnAnsweredQ: false,
+                                                       questionType: QuestionType.All
+                                                   })} />
+                                <RoundedButton title="Log out" onClick={() => store.dispatch(push(Routes.login))}/>
+                            </div>
+                            <div>
+                            </div>
                         </div>
                     </div>
                 </div>
