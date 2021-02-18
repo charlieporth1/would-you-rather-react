@@ -14,7 +14,8 @@ export async function userReducer(state = {user: null, users: getUsers()}, actio
             case 'login/id':
                 return {user: users[action.payload.userId], ...state};
             case 'user/getUsers':
-                return {users, ...state} ;
+                const u = await getUsers();
+                return {users:u, ...state} ;
             default:
                 return state
         }

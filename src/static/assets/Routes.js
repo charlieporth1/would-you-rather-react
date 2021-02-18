@@ -1,6 +1,6 @@
 export const Routes = {
     home: '/home',
     login:'/login',
-    createQuestion: '/questions/create',
+    createQuestion: '/add',
     leaderboard: '/leaderboard',
 };

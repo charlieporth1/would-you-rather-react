@@ -15,6 +15,15 @@ export const objectToArray = async (obj: Object) => {
         }
     })
 };
+export const objectToArrayNonAsync = (obj: Object) => {
+    const arrayOfObj = [];
+    for (let item in obj) {
+        arrayOfObj.push(obj[item]);
+        if (Object.keys(obj).pop() === item) {
+            return arrayOfObj;
+        }
+    }
+};
 export const onlyUnique = (value: any, index: number, self: any[]): boolean => {
     return self.indexOf(value) === index;
 };
@@ -55,6 +64,12 @@ export const simpleSort = (a: any, b: any): number => {
 };
 export const timeStampSort = (a, b) => {
     return a.timestamp - b.timestamp;
+};
+export const timeStampSortDescending = (
+    a,
+    b
+): number => {
+    return timeStampSort(b, a);
 };
 // Alias function
 export const simpleSortAscending = (
@@ -114,8 +129,8 @@ export const isArrayEquals = (arrayOne: [] = [], ArrayTwo: [] = []) => {
     return JSON.stringify(arrayOne) === JSON.stringify(ArrayTwo)
 };
 export const combineArrays = async (...arrays: []) => [].concat(...arrays).filter(onlyUniqueAndNil);
-    // return new Promise((resolve) => {
-    //     const combine = [].concat(...arrays).filter(onlyUniqueAndNil);
-    //     setTimeout(() => resolve(combine), 250);
-    // });
+// return new Promise((resolve) => {
+//     const combine = [].concat(...arrays).filter(onlyUniqueAndNil);
+//     setTimeout(() => resolve(combine), 250);
+// });
 // };

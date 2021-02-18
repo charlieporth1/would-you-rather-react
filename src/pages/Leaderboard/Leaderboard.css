@@ -4,14 +4,13 @@
 
 .leaderboard-data {
     display: grid;
-    grid-area: 2 /2;
+    grid-area: 2 / 3;
     margin: 25px;
+    grid-gap: 20px;
 }
 
 .leaderboard-data-grid-item:nth-child(0) {
-
     grid-area: 2 /1;
-
 }
 
 .leaderboard-data-grid-item:nth-child(1) {
@@ -22,6 +21,9 @@
     grid-area: 2/ 2;
 }
 
-.leaderboard-data-grid-item:nth-child(3) {
-    grid-area: 1/1;
+.leaderboard-data-grid-item:nth-child(5) {
+    grid-area: 1/3;
+}
+.leaderboard-data-grid-item:nth-child(6) {
+    grid-area: 2/3;
 }

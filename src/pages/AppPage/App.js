@@ -2,7 +2,12 @@ import logo from '../../static/assets/logo.svg';
 import './App.css';
 import * as React from "react";
 import QuestionBlock from "../../components/questionBlock/QuestionBlock";
-import {combineArrays, makeCleanClassName, randomNumber, timeStampSort} from "../../utils/utils";
+import {
+    combineArrays,
+    makeCleanClassName,
+    randomNumber,
+    timeStampSortDescending
+} from "../../utils/utils";
 import RoundedButton from "../../components/button/RoundedButton";
 import PropTypes from "prop-types";
 import {withRouter} from "react-router-dom";
@@ -40,7 +45,7 @@ class App extends React.Component<App.propTypes> {
         const {authStore, history, store} = this.props;
         authStore(history);
         const {isViewAnsweredQ, isViewUnAnsweredQ} = this.state;
-        const {router} = store.getState() || {location: null};
+        const {router} = store.getState()|| {location: null};
         const {state} = router.location;
         const {questionsArrays} = state || {questionsArrays: []};
         const smallState = {isViewAnsweredQ, isViewUnAnsweredQ, questionsArrays};
@@ -96,7 +101,7 @@ class App extends React.Component<App.propTypes> {
                 const isOptionTwo: boolean = (question.optionTwo.votes.includes(userId));
                 return isOptionOne === true || isOptionTwo === true;
 
-            }).sort(timeStampSort);
+            }).sort(timeStampSortDescending);
             return answeredQuestions;
         } else if (isViewUnAnsweredQ) {
             const unansweredQuestions = questionsArray.filter((question) => {
@@ -105,32 +110,13 @@ class App extends React.Component<App.propTypes> {
 
                 return notOptionOne === false && notOptionTwo === false;
 
-            }).sort(timeStampSort);
+            }).sort(timeStampSortDescending);
             return unansweredQuestions;
 
         } else {
-            const filteredQuestionsArray: [] = questionsArray.sort(timeStampSort);
+            const filteredQuestionsArray: [] = questionsArray.sort(timeStampSortDescending);
             return filteredQuestionsArray;
         }
-    };
-
-    updateQuestion(filteredQuestionsArray: [] = [], additionalStateUpdates?) {
-        const currentState = additionalStateUpdates || this.state;
-        const {
-            isViewAnsweredQ,
-            isViewUnAnsweredQ,
-        } = currentState;
-
-        const isViewingAll = !isViewUnAnsweredQ && !isViewAnsweredQ;
-
-        let currentQuestion;
-        if (isViewingAll) {
-            const index = randomNumber(0, filteredQuestionsArray.length - 1);
-            currentQuestion = filteredQuestionsArray[index];
-        } else {
-            currentQuestion = filteredQuestionsArray.shift();
-        }
-        return currentQuestion;
     };
 
     render() {

@@ -20,6 +20,8 @@ export default class ViewPolls extends React.Component<ViewPolls.propTypes> {
                 <h3>{questionOne}</h3>  <h3>{questionTwo}</h3>
                 <p className={makeCleanClassName([whichOne ? "view-polls-answered-question" : ""])}>{data.array1Percent.toFixed(2)}%</p>
                 <p className={makeCleanClassName([!whichOne ? "view-polls-answered-question" : ""])}>{data.array2Percent.toFixed(2)}%</p>
+                <p>Vote counts: {question.optionOne.votes.length}</p>
+                <p>Vote counts: {question.optionTwo.votes.length}</p>
                 <p>Author: {question.author}</p>
                 <p>{data.count} total votes</p>
             </div>
