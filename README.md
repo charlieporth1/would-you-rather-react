@@ -2,7 +2,8 @@
 # About 
 This is a simple react web app for rating a question.
 A user can login using the `/login` page
- 
+Udactiy NanoDegree Intro to React project
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
